@@ -1,27 +1,12 @@
 (ns weather-advisor.core
-  (:require [weather-advisor.env :refer [get-env]]
-            [weather-advisor.json :refer [call]])
-
+  (:require [weather-advisor.service :refer [get-coords get-weather]])
   (:gen-class))
 
-(def env (get-env))
-(def api-url "http://api.openweathermap.org/geo/1.0/direct")
-(def weather-url "https://api.openweathermap.org/data/2.5/weather")
-
-(defn get-lat-lon [city]
-  (let [geocode (call api-url {:q city :appid (:OPEN_WEATHER_API  env) :limit 1})
-        {lat :lat lon :lon} (first geocode)]
-    {:lat lat :lon lon}))
-
-(defn get-weather [lat lon]
-  (let [weather-response (call weather-url {:lat lat :lon lon :appid (:OPEN_WEATHER_API env) :units "metric"})
-        {[weather] :weather {:keys [temp]} :main} weather-response]
-    (str (:main weather) " - " (:description weather) " with a temperature of " temp " C ")))
-
 (defn process-city [city]
-  (let [{lat :lat lon :lon} (get-lat-lon city)]
+  (let [{lat :lat lon :lon} (get-coords city)]
     (if (not (or (nil? lat) (nil? lon)))
-      (get-weather lat lon)
+      (let [{main :main description :description temp :temp} (get-weather lat lon)]
+        (str "Main weather " main "\n" description "\nTemperature is " temp " C "))
       "No city found with that name")))
 
 (defn -main
