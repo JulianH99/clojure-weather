@@ -20,7 +20,9 @@
 
 (defn process-city [city]
   (let [{lat :lat lon :lon} (get-lat-lon city)]
-    (get-weather lat lon)))
+    (if (not (or (nil? lat) (nil? lon)))
+      (get-weather lat lon)
+      "No city found with that name")))
 
 (defn -main
   "I don't do a whole lot ... yet."
