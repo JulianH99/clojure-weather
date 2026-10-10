@@ -4,7 +4,7 @@
 
 (defn process-city [city]
   (let [{lat :lat lon :lon} (get-coords city)]
-    (if (not (or (nil? lat) (nil? lon)))
+    (if (and lat lon)
       (let [{main :main description :description temp :temp} (get-weather lat lon)]
         (str "Main weather " main "\n" description "\nTemperature is " temp " C "))
       "No city found with that name")))
