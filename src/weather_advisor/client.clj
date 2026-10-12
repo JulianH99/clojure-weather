@@ -3,11 +3,14 @@
             [cheshire.core :refer [decode]]
             [weather-advisor.env :refer [get-env]]))
 
-(def API_URL "https://api.openweathermap.org/")
-(def API_KEY (:OPEN_WEATHER_API (get-env)))
+(def api-url "https://api.openweathermap.org/")
+(defn api-key [] (:OPEN_WEATHER_API (get-env)))
 
 (defn call [url params]
-  (let [response (client/get (str API_URL url) {:query-params (assoc params :appid API_KEY)})
+  (let [response (client/get (str api-url url) {:query-params (assoc params :appid (api-key)) :throw-exceptions false})
+        status-code (:status response)
         json (decode (:body response) true)]
-    json))
+    (if (= status-code 200)
+      {:body json}
+      {:error true})))
 

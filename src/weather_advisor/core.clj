@@ -7,10 +7,10 @@
     (if (and lat lon)
       (let [{main :main description :description temp :temp} (get-weather lat lon)]
         (str "Main weather " main "\n" description "\nTemperature is " temp " C "))
-      "No city found with that name")))
+      "Error getting city weather. Check your API key exists and the city name is real")))
 
 (defn -main
-  "I don't do a whole lot ... yet."
+  "Gets the weather of your city and displays its main weather and temperature"
   ([] (println "Please provide a city name"))
   ([& [city & _]] (println (str "your city is " city))
                   (println (process-city city))))
